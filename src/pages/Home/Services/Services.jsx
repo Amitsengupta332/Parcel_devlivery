@@ -54,7 +54,7 @@ const Services = () => {
       <div className="max-w-6xl mx-auto px-4">
         {/* Section Heading */}
         <div className="text-center mb-10">
-          <h2 className="text-3xl font-bold mb-4">Our Services</h2>
+          <h2 className="text-3xl font-bold mb-4 text-primary">Our Services</h2>
           <p className="text-gray-600 max-w-2xl mx-auto">
             Enjoy fast, reliable parcel delivery with real-time tracking and
             zero hassle. From personal packages to business shipments — we
