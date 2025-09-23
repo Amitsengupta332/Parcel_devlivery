@@ -3,6 +3,7 @@ import BeMerchant from "../BeMerchant/BeMerchant";
 import Benefits from "../Benefits/Benefits";
 import ClientLogosMarquee from "../ClientLogosMarquee/ClientLogosMarquee";
 import Services from "../Services/Services";
+import Testimonials from "../Testimonials/Testimonials";
 
 const Home = () => {
   return (
@@ -12,6 +13,7 @@ const Home = () => {
       <ClientLogosMarquee />
       <Benefits />
       <BeMerchant />
+      <Testimonials/>
       {/* <div className="py-10 bg-gray-100">
         <div className="max-w-6xl mx-auto px-4">
           <h2 className="text-3xl font-bold mb-4 text-primary">

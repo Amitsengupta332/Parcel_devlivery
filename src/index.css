@@ -21,3 +21,46 @@
   font-weight: 400;
   font-style: normal;
 }
+
+/* Pagination dots */
+/* .swiper-pagination-bullet {
+  background: #22c55e; /* Tailwind green-500 */
+  /* opacity: 0.5; */
+/* } */ */
+/* .swiper-pagination-bullet-active {
+  opacity: 1;
+} */
+
+/* Highlight middle (active) card */
+/* .swiper-slide-active .testimonial-card {
+  transform: scale(1.05);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+  border-color: #22c55e;  
+} */
+
+
+/* Pagination dots */
+.swiper-pagination-bullet {
+  background: #22c55e; /* Tailwind green-500 */
+  opacity: 0.4;
+}
+.swiper-pagination-bullet-active {
+  opacity: 1;
+}
+
+/* Highlight middle (active) card */
+.swiper-slide-active .testimonial-card {
+  transform: scale(1.05);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  border-color: #22c55e; /* green-500 */
+  opacity: 1;
+  transition: all 0.3s ease;
+}
+
+/* Fade side cards */
+.swiper-slide-prev .testimonial-card,
+.swiper-slide-next .testimonial-card {
+  transform: scale(0.9);
+  opacity: 0.5;
+  transition: all 0.3s ease;
+}

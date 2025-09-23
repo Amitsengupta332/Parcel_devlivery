@@ -30,3 +30,6 @@ const BeMerchant = () => {
 };
 
 export default BeMerchant;
+
+//https://github.com/ProgrammingHero1?page=3&tab=repositories
+//https://github.com/ProgrammingHero1/zap-shift-client/blob/main/src/pages/Home/BeMerchant/BeMerchant.jsx
