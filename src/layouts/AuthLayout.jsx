@@ -5,9 +5,9 @@ import ProFastLogo from "../pages/shared/ProFastLogo/ProFastLogo";
 const AuthLayout = () => {
   return (
     <div className="p-12 bg-base-200">
-      <Link to="/">
+      <div>
         <ProFastLogo></ProFastLogo>
-      </Link>
+      </div>
 
       <div className="hero-content flex-col lg:flex-row-reverse">
         <div className="flex-1">
