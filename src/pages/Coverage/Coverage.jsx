@@ -1,6 +1,8 @@
+import { useLoaderData } from "react-router-dom";
 import BangladeshMap from "./BangladeshMap";
 
 const Coverage = () => {
+      const serviceCenters = useLoaderData();
   return (
     <div className="max-w-4xl mx-auto px-4 py-10">
       <h1 className="text-3xl font-bold text-center mb-6">
@@ -10,8 +12,8 @@ const Coverage = () => {
       {/* Later you can add your search box here */}
       {/* <SearchDistrictBox /> */}
 
-      <BangladeshMap />
-      {/* <BangladeshMap serviceCenters={serviceCenters} /> */}
+      {/* <BangladeshMap /> */}
+      <BangladeshMap serviceCenters={serviceCenters} />
     </div>
   );
 };
