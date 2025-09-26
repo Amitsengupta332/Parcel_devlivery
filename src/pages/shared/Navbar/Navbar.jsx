@@ -14,9 +14,9 @@ const Navbar = () => {
       <li>
         <NavLink to="/coverage">Coverage</NavLink>
       </li>
-      {/* <li>
-        <NavLink to="/login">Login</NavLink>
-      </li> */}
+      <li>
+        <NavLink to="/sendPercel">Send A Percel</NavLink>
+      </li>
     </>
   );
   return (
