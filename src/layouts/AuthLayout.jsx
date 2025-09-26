@@ -24,3 +24,5 @@ const AuthLayout = () => {
 export default AuthLayout;
 
 //https://github.com/ProgrammingHero1/zap-shift-client-with-auth-part2/blob/main/src/layouts/AuthLayout.jsx
+//https://github.com/ProgrammingHero1/zap-shift-client-parcel-management-part3
+//https://github.com/ProgrammingHero1/zap-shift-server-parcel-management-part3
