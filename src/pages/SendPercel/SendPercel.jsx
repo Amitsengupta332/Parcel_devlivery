@@ -8,15 +8,20 @@ const SendPercel = () => {
     watch,
     formState: { errors },
   } = useForm();
+
   const serviceCenters = useLoaderData();
-  const uniqueRegions = [...new Set(serviceCenters.map((w) => w.region))];
+  const uniqueRegions = [...new Set(serviceCenters?.map((w) => w.region))];
   // Get districts by region
   const getDistrictsByRegion = (region) =>
-    serviceCenters.filter((w) => w.region === region).map((w) => w.district);
+    serviceCenters?.filter((w) => w.region === region).map((w) => w.district);
+  
   const parcelType = watch("type");
   const senderRegion = watch("sender_region");
   const receiverRegion = watch("receiver_region");
+
+  // onSubmit
   const onSubmit = (data) => {
+   
     console.log(data);
   };
   return (
@@ -112,7 +117,7 @@ const SendPercel = () => {
                 {...register("sender_region", { required: true })}
                 className="select select-bordered w-full">
                 <option value="">Select Region</option>
-                {uniqueRegions.map((region) => (
+                {uniqueRegions?.map((region) => (
                   <option key={region} value={region}>
                     {region}
                   </option>
@@ -122,7 +127,7 @@ const SendPercel = () => {
                 {...register("sender_center", { required: true })}
                 className="select select-bordered w-full">
                 <option value="">Select Service Center</option>
-                {getDistrictsByRegion(senderRegion).map((district) => (
+                {getDistrictsByRegion(senderRegion)?.map((district) => (
                   <option key={district} value={district}>
                     {district}
                   </option>
@@ -159,7 +164,7 @@ const SendPercel = () => {
                 {...register("receiver_region", { required: true })}
                 className="select select-bordered w-full">
                 <option value="">Select Region</option>
-                {uniqueRegions.map((region) => (
+                {uniqueRegions?.map((region) => (
                   <option key={region} value={region}>
                     {region}
                   </option>
@@ -169,7 +174,7 @@ const SendPercel = () => {
                 {...register("receiver_center", { required: true })}
                 className="select select-bordered w-full">
                 <option value="">Select Service Center</option>
-                {getDistrictsByRegion(receiverRegion).map((district) => (
+                {getDistrictsByRegion(receiverRegion)?.map((district) => (
                   <option key={district} value={district}>
                     {district}
                   </option>
