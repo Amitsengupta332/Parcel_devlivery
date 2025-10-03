@@ -14,15 +14,48 @@ const SendPercel = () => {
   // Get districts by region
   const getDistrictsByRegion = (region) =>
     serviceCenters?.filter((w) => w.region === region).map((w) => w.district);
-  
+
   const parcelType = watch("type");
   const senderRegion = watch("sender_region");
   const receiverRegion = watch("receiver_region");
 
   // onSubmit
   const onSubmit = (data) => {
-   
-    console.log(data);
+    const weight = parseFloat(data.weight) || 0;
+    const isSameDistrict = data.sender_center === data.receiver_center;
+
+    let baseCost = 0;
+    let extraCost = 0;
+    let breakdown = "";
+    if (data.type === "document") {
+      baseCost = isSameDistrict ? 60 : 80;
+      breakdown = `Document delivery ${
+        isSameDistrict ? "within" : "outside"
+      } the district.`;
+    } else {
+      if (weight <= 3) {
+        baseCost = isSameDistrict ? 110 : 150;
+        breakdown = `Non-document up to 3kg ${
+          isSameDistrict ? "within" : "outside"
+        } the district.`;
+      } else {
+        const extraKg = weight - 3;
+        const perKgCharge = extraKg * 40;
+        const districtExtra = isSameDistrict ? 0 : 40;
+        baseCost = isSameDistrict ? 110 : 150;
+        extraCost = perKgCharge + districtExtra;
+
+        breakdown = `
+        Non-document over 3kg ${
+          isSameDistrict ? "within" : "outside"
+        } the district.<br/>
+        Extra charge: ৳40 x ${extraKg.toFixed(1)}kg = ৳${perKgCharge}<br/>
+        ${districtExtra ? "+ ৳40 extra for outside district delivery" : ""}
+      `;
+      }
+    }
+          const totalCost = baseCost + extraCost;
+    console.log(totalCost);
   };
   return (
     <div className="p-6 max-w-6xl mx-auto">
