@@ -1,123 +1,135 @@
 import { useForm } from "react-hook-form";
-import { useLoaderData } from "react-router-dom";
 import Swal from "sweetalert2";
+import { useLoaderData } from "react-router";
 import useAuth from "../../hooks/useAuth";
+import useAxiosSecure from "../../hooks/useAxiosSecure";
 
 const generateTrackingID = () => {
-    const date = new Date();
-    const datePart = date.toISOString().split("T")[0].replace(/-/g, "");
-    const rand = Math.random().toString(36).substring(2, 7).toUpperCase();
-    return `PCL-${datePart}-${rand}`;
+  const date = new Date();
+  const datePart = date.toISOString().split("T")[0].replace(/-/g, "");
+  const rand = Math.random().toString(36).substring(2, 7).toUpperCase();
+  return `PCL-${datePart}-${rand}`;
 };
 
-const SendPercel = () => {
+const SendParcel = () => {
   const {
     register,
     handleSubmit,
     watch,
     formState: { errors },
   } = useForm();
-  const {user} = useAuth();
+  const { user } = useAuth();
+  const axiosSecure = useAxiosSecure();
 
   const serviceCenters = useLoaderData();
-  const uniqueRegions = [...new Set(serviceCenters?.map((w) => w.region))];
+  // Extract unique regions
+  const uniqueRegions = [...new Set(serviceCenters.map((w) => w.region))];
   // Get districts by region
   const getDistrictsByRegion = (region) =>
-    serviceCenters?.filter((w) => w.region === region).map((w) => w.district);
+    serviceCenters.filter((w) => w.region === region).map((w) => w.district);
 
   const parcelType = watch("type");
   const senderRegion = watch("sender_region");
   const receiverRegion = watch("receiver_region");
 
-  // onSubmit
   const onSubmit = (data) => {
-        const weight = parseFloat(data.weight) || 0;
-        const isSameDistrict = data.sender_center === data.receiver_center;
+    const weight = parseFloat(data.weight) || 0;
+    const isSameDistrict = data.sender_center === data.receiver_center;
 
-        let baseCost = 0;
-        let extraCost = 0;
-        let breakdown = "";
+    let baseCost = 0;
+    let extraCost = 0;
+    let breakdown = "";
 
-        if (data.type === "document") {
-            baseCost = isSameDistrict ? 60 : 80;
-            breakdown = `Document delivery ${isSameDistrict ? "within" : "outside"} the district.`;
-        } else {
-            if (weight <= 3) {
-                baseCost = isSameDistrict ? 110 : 150;
-                breakdown = `Non-document up to 3kg ${isSameDistrict ? "within" : "outside"} the district.`;
-            } else {
-                const extraKg = weight - 3;
-                const perKgCharge = extraKg * 40;
-                const districtExtra = isSameDistrict ? 0 : 40;
-                baseCost = isSameDistrict ? 110 : 150;
-                extraCost = perKgCharge + districtExtra;
+    if (data.type === "document") {
+      baseCost = isSameDistrict ? 60 : 80;
+      breakdown = `Document delivery ${
+        isSameDistrict ? "within" : "outside"
+      } the district.`;
+    } else {
+      if (weight <= 3) {
+        baseCost = isSameDistrict ? 110 : 150;
+        breakdown = `Non-document up to 3kg ${
+          isSameDistrict ? "within" : "outside"
+        } the district.`;
+      } else {
+        const extraKg = weight - 3;
+        const perKgCharge = extraKg * 40;
+        const districtExtra = isSameDistrict ? 0 : 40;
+        baseCost = isSameDistrict ? 110 : 150;
+        extraCost = perKgCharge + districtExtra;
 
-                breakdown = `
-        Non-document over 3kg ${isSameDistrict ? "within" : "outside"} the district.<br/>
+        breakdown = `
+        Non-document over 3kg ${
+          isSameDistrict ? "within" : "outside"
+        } the district.<br/>
         Extra charge: ৳40 x ${extraKg.toFixed(1)}kg = ৳${perKgCharge}<br/>
         ${districtExtra ? "+ ৳40 extra for outside district delivery" : ""}
       `;
-            }
-        }
+      }
+    }
 
-        const totalCost = baseCost + extraCost;
+    const totalCost = baseCost + extraCost;
 
-        Swal.fire({
-            title: "Delivery Cost Breakdown",
-            icon: "info",
-            html: `
+    Swal.fire({
+      title: "Delivery Cost Breakdown",
+      icon: "info",
+      html: `
       <div class="text-left text-base space-y-2">
         <p><strong>Parcel Type:</strong> ${data.type}</p>
         <p><strong>Weight:</strong> ${weight} kg</p>
-        <p><strong>Delivery Zone:</strong> ${isSameDistrict ? "Within Same District" : "Outside District"}</p>
+        <p><strong>Delivery Zone:</strong> ${
+          isSameDistrict ? "Within Same District" : "Outside District"
+        }</p>
         <hr class="my-2"/>
         <p><strong>Base Cost:</strong> ৳${baseCost}</p>
-        ${extraCost > 0 ? `<p><strong>Extra Charges:</strong> ৳${extraCost}</p>` : ""}
+        ${
+          extraCost > 0
+            ? `<p><strong>Extra Charges:</strong> ৳${extraCost}</p>`
+            : ""
+        }
         <div class="text-gray-500 text-sm">${breakdown}</div>
         <hr class="my-2"/>
         <p class="text-xl font-bold text-green-600">Total Cost: ৳${totalCost}</p>
       </div>
     `,
-            showDenyButton: true,
-            confirmButtonText: "💳 Proceed to Payment",
-            denyButtonText: "✏️ Continue Editing",
-            confirmButtonColor: "#16a34a",
-            denyButtonColor: "#d3d3d3",
-            customClass: {
-                popup: "rounded-xl shadow-md px-6 py-6",
-            },
-        }).then((result) => {
-            if (result.isConfirmed) {
-                const parcelData = {
-                    ...data,
-                    cost: totalCost,
-                    created_by: user?.email,
-                    payment_status: 'unpaid',
-                    delivery_status: 'not_collected',
-                    creation_date: new Date().toISOString(),
-                    tracking_id: generateTrackingID(),
-                };
+      showDenyButton: true,
+      confirmButtonText: "💳 Proceed to Payment",
+      denyButtonText: "✏️ Continue Editing",
+      confirmButtonColor: "#16a34a",
+      denyButtonColor: "#d3d3d3",
+      customClass: {
+        popup: "rounded-xl shadow-md px-6 py-6",
+      },
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const parcelData = {
+          ...data,
+          cost: totalCost,
+          created_by: user.email,
+          payment_status: "unpaid",
+          delivery_status: "not_collected",
+          creation_date: new Date().toISOString(),
+          tracking_id: generateTrackingID(),
+        };
 
-                console.log("Ready for payment:", parcelData);
-                
-                axiosSecure.post('/parcels', parcelData)
-                    .then(res => {
-                        console.log(res.data);
-                        if (res.data.insertedId) {
-                            // TODO: redirect to a payment page 
-                            Swal.fire({
-                                title: "Redirecting...",
-                                text: "Proceeding to payment gateway.",
-                                icon: "success",
-                                timer: 1500,
-                                showConfirmButton: false,
-                            });
-                        }
-                    })
-                
-            }
+        console.log("Ready for payment:", parcelData);
+
+        axiosSecure.post("/parcels", parcelData).then((res) => {
+          console.log(res.data);
+          if (res.data.insertedId) {
+            // TODO: redirect to a payment page
+            Swal.fire({
+              title: "Redirecting...",
+              text: "Proceeding to payment gateway.",
+              icon: "success",
+              timer: 1500,
+              showConfirmButton: false,
+            });
+          }
         });
-    };
+      }
+    });
+  };
 
   return (
     <div className="p-6 max-w-6xl mx-auto">
@@ -212,7 +224,7 @@ const SendPercel = () => {
                 {...register("sender_region", { required: true })}
                 className="select select-bordered w-full">
                 <option value="">Select Region</option>
-                {uniqueRegions?.map((region) => (
+                {uniqueRegions.map((region) => (
                   <option key={region} value={region}>
                     {region}
                   </option>
@@ -222,7 +234,7 @@ const SendPercel = () => {
                 {...register("sender_center", { required: true })}
                 className="select select-bordered w-full">
                 <option value="">Select Service Center</option>
-                {getDistrictsByRegion(senderRegion)?.map((district) => (
+                {getDistrictsByRegion(senderRegion).map((district) => (
                   <option key={district} value={district}>
                     {district}
                   </option>
@@ -259,7 +271,7 @@ const SendPercel = () => {
                 {...register("receiver_region", { required: true })}
                 className="select select-bordered w-full">
                 <option value="">Select Region</option>
-                {uniqueRegions?.map((region) => (
+                {uniqueRegions.map((region) => (
                   <option key={region} value={region}>
                     {region}
                   </option>
@@ -269,7 +281,7 @@ const SendPercel = () => {
                 {...register("receiver_center", { required: true })}
                 className="select select-bordered w-full">
                 <option value="">Select Service Center</option>
-                {getDistrictsByRegion(receiverRegion)?.map((district) => (
+                {getDistrictsByRegion(receiverRegion).map((district) => (
                   <option key={district} value={district}>
                     {district}
                   </option>
@@ -298,4 +310,4 @@ const SendPercel = () => {
   );
 };
 
-export default SendPercel;
+export default SendParcel;
