@@ -27,3 +27,19 @@ export default AuthLayout;
 //https://github.com/ProgrammingHero1/zap-shift-client-parcel-management-part3
 //https://github.com/ProgrammingHero1/zap-shift-server-parcel-management-part3
 //https://github.com/ProgrammingHero1/zap-shift-resources/blob/main/requirements.md
+
+
+//https://github.com/ProgrammingHero1/zap-shift-server-payment-part4
+//http://github.com/ProgrammingHero1/zap-shift-client-payment-part4
+
+//https://github.com/ProgrammingHero1/zap-shift-server-role-and-jwt-part5
+//https://github.com/ProgrammingHero1/zap-shift-client-role-and-jwt-part5
+
+// https://github.com/ProgrammingHero1/zap-shift-server-admin-role-part6
+// https://github.com/ProgrammingHero1/zap-shift-client-admin-role-part6
+
+// https://github.com/ProgrammingHero1/zap-shift-client-rider-track-part7
+// https://github.com/ProgrammingHero1/zap-shift-server-rider-track-part7
+
+// https://github.com/ProgrammingHero1/zap-shift-client-dashboard-home-part8
+// https://github.com/ProgrammingHero1/zap-shift-server-dashboard-home-part8
