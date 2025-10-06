@@ -1,22 +1,27 @@
+import { useLocation, useNavigate } from "react-router-dom";
 import useAuth from "../../../hooks/useAuth";
 
 const SocialLogin = () => {
   const { signInWithGoogle } = useAuth();
+  const location = useLocation();
+    const navigate = useNavigate();
+    const from = location.state?.from || '/';
+   const handleGoogleSignIn = () => {
+        signInWithGoogle()
+            .then(result => {
+                console.log(result.user);
+                navigate(from);
+            })
+            .catch(error => {
+                console.error(error);
+            })
+    }
 
-  const handleGoogleLogin = () => {
-    signInWithGoogle()
-      .then((result) => {
-        console.log(result.user);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  };
   return (
     <div className="text-center">
       <p className="mb-4">OR</p>
       <button
-        onClick={handleGoogleLogin}
+        onClick={handleGoogleSignIn}
         className="btn bg-white text-black border-[#e5e5e5]">
         <svg
           aria-label="Google logo"
