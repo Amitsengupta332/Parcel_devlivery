@@ -3,10 +3,12 @@ import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
+import useAuth from "../../../hooks/useAuth";
 
 const PaymentForm = () => {
   const stripe = useStripe();
   const elements = useElements();
+  const { user } = useAuth();
   const { parcelId } = useParams();
   const axiosSecure = useAxiosSecure();
   const [error, setError] = useState("");
@@ -25,6 +27,8 @@ const PaymentForm = () => {
 
   console.log("parcelInfo", parcelInfo);
   const amount = parcelInfo.cost;
+  const amountInCents = amount * 100;
+  console.log(amountInCents);
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!stripe || !elements) {
@@ -37,6 +41,7 @@ const PaymentForm = () => {
       return;
     }
 
+    // step- 1: validate the card
     const { error, paymentMethod } = await stripe.createPaymentMethod({
       type: "card",
       card,
@@ -47,6 +52,45 @@ const PaymentForm = () => {
     } else {
       setError("");
       console.log("payment method", paymentMethod);
+
+      // step-2: create payment intent
+      const res = await axiosSecure.post("/create-payment-intent", {
+        amountInCents,
+        parcelId,
+      });
+      // console.log("res", res);
+      const clientSecret = res.data.clientSecret;
+
+      // step-3: confirm payment
+      const result = await stripe.confirmCardPayment(clientSecret, {
+        payment_method: {
+          card: elements.getElement(CardElement),
+          billing_details: {
+            name: user.displayName,
+            email: user.email,
+          },
+        },
+      });
+
+      if (result.error) {
+        setError(result.error.message);
+      } else {
+        setError("");
+        if (result.paymentIntent.status === "succeeded") {
+          console.log("Payment succeeded!");
+          const transactionId = result.paymentIntent.id;
+          // step-4 mark parcel paid also create payment history
+          const paymentData = {
+            parcelId,
+            email: user.email,
+            amount,
+            transactionId: transactionId,
+            paymentMethod: result.paymentIntent.payment_method_types,
+          };
+
+          const paymentRes = await axiosSecure.post("/payments", paymentData);
+        }
+      }
     }
   };
   return (
