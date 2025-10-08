@@ -1,9 +1,10 @@
 import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import useAuth from "../../../hooks/useAuth";
+import Swal from "sweetalert2";
 
 const PaymentForm = () => {
   const stripe = useStripe();
@@ -12,6 +13,7 @@ const PaymentForm = () => {
   const { parcelId } = useParams();
   const axiosSecure = useAxiosSecure();
   const [error, setError] = useState("");
+      const navigate = useNavigate();
 
   const { isPending, data: parcelInfo = {} } = useQuery({
     queryKey: ["parcels", parcelId],
@@ -89,6 +91,18 @@ const PaymentForm = () => {
           };
 
           const paymentRes = await axiosSecure.post("/payments", paymentData);
+             if (paymentRes.data.insertedId) {
+                        // ✅ Show SweetAlert with transaction ID
+                        await Swal.fire({
+                            icon: 'success',
+                            title: 'Payment Successful!',
+                            html: `<strong>Transaction ID:</strong> <code>${transactionId}</code>`,
+                            confirmButtonText: 'Go to My Parcels',
+                        });
+
+                        // ✅ Redirect to /myParcels
+                        navigate('/dashboard/myParcels');
+             }
         }
       }
     }

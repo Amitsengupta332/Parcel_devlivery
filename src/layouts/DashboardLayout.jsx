@@ -1,6 +1,12 @@
 import { NavLink, Outlet } from "react-router-dom";
 import ProFastLogo from "../pages/shared/ProFastLogo/ProFastLogo";
-
+import {
+  FaHome,
+  FaBoxOpen,
+  FaMoneyCheckAlt,
+  FaUserEdit,
+  FaSearchLocation,
+} from "react-icons/fa";
 const DashboardLayout = () => {
   return (
     <div className="drawer lg:drawer-open">
@@ -44,7 +50,28 @@ const DashboardLayout = () => {
             <a>Home</a>
           </li>
           <li>
-            <NavLink to="/dashboard/myParcels">My Parcels</NavLink>
+            <NavLink to="/dashboard/myParcels">
+              <FaBoxOpen className="inline-block mr-2" />
+              My Parcels
+            </NavLink>
+          </li>
+          <li>
+            <NavLink to="/dashboard/paymentHistory">
+              <FaMoneyCheckAlt className="inline-block mr-2" />
+              Payment History
+            </NavLink>
+          </li>
+          <li>
+            <NavLink to="/dashboard/track">
+              <FaSearchLocation className="inline-block mr-2" />
+              Track a Package
+            </NavLink>
+          </li>
+          <li>
+            <NavLink to="/dashboard/profile">
+              <FaUserEdit className="inline-block mr-2" />
+              Update Profile
+            </NavLink>
           </li>
         </ul>
       </div>
