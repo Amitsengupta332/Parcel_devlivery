@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import useAuth from "../../../hooks/useAuth";
 import SocialLogin from "../SocialLogin/SocialLogin";
+import axios from "axios";
+import useAxios from "../../../hooks/useAxios";
 
 const Register = () => {
   const {
@@ -11,18 +13,42 @@ const Register = () => {
     formState: { errors },
   } = useForm();
 
-  const { createUser } = useAuth();
+  const { createUser, updateUserProfile } = useAuth();
 
-  const location = useLocation();
-  const navigate = useNavigate();
-  const from = location.state?.from || "/";
+  const axiosInstance = useAxios();
+
+  const [profilePic, setProfilePic] = useState("");
 
   const onSubmit = (data) => {
     console.log(data);
+
     createUser(data.email, data.password)
-      .then((result) => {
+      .then(async (result) => {
         console.log(result.user);
-        navigate(from);
+
+        // update userinfo in the database
+        const userInfo = {
+          email: data.email,
+          role: "user", // default role
+          created_at: new Date().toISOString(),
+          last_log_in: new Date().toISOString(),
+        };
+
+        const userRes = await axiosInstance.post("/users", userInfo);
+        console.log(userRes.data);
+
+        // update user profile in firebase
+        const userProfile = {
+          displayName: data.name,
+          photoURL: profilePic,
+        };
+        updateUserProfile(userProfile)
+          .then(() => {
+            console.log("profile name pic updated");
+          })
+          .catch((error) => {
+            console.log(error);
+          });
       })
       .catch((error) => {
         console.error(error);
@@ -35,6 +61,13 @@ const Register = () => {
 
     const formData = new FormData();
     formData.append("image", image);
+    const imagUploadUrl = `https://api.imgbb.com/1/upload?key=${
+      import.meta.env.VITE_image_upload_key
+    }`;
+    const res = await axios.post(imagUploadUrl, formData);
+
+    setProfilePic(res.data.data.url);
+    // console.log(res.data.data.url);
   };
   return (
     <div className="card bg-base-100 w-full max-w-sm shrink-0 shadow-2xl">
