@@ -1,21 +1,36 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import useAuth from "../../../hooks/useAuth";
+import useAxios from "../../../hooks/useAxios";
 
 const SocialLogin = () => {
   const { signInWithGoogle } = useAuth();
   const location = useLocation();
-    const navigate = useNavigate();
-    const from = location.state?.from || '/';
-   const handleGoogleSignIn = () => {
-        signInWithGoogle()
-            .then(result => {
-                console.log(result.user);
-                navigate(from);
-            })
-            .catch(error => {
-                console.error(error);
-            })
-    }
+  const navigate = useNavigate();
+  const from = location.state?.from || "/";
+  const axiosInstance = useAxios();
+
+  const handleGoogleSignIn = () => {
+    signInWithGoogle()
+      .then(async (result) => {
+        const user = result.user;
+        console.log(result.user);
+        // update userinfo in the database
+        const userInfo = {
+          email: user.email,
+          role: "user", // default role
+          created_at: new Date().toISOString(),
+          last_log_in: new Date().toISOString(),
+        };
+
+        const res = await axiosInstance.post("/users", userInfo);
+        console.log("user update info", res.data);
+
+        navigate(from);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
 
   return (
     <div className="text-center">
