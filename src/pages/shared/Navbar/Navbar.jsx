@@ -11,13 +11,10 @@ const Navbar = () => {
         <NavLink to="/">Home</NavLink>
       </li>
       <li>
-        <NavLink to="/about">About Us</NavLink>
+        <NavLink to="/sendParcel">Send A Parcel</NavLink>
       </li>
       <li>
         <NavLink to="/coverage">Coverage</NavLink>
-      </li>
-      <li>
-        <NavLink to="/sendPercel">Send A Percel</NavLink>
       </li>
 
       {user && (
@@ -27,13 +24,22 @@ const Navbar = () => {
           </li>
         </>
       )}
+
+      <li>
+        <NavLink to="/beARider">Be a Rider</NavLink>
+      </li>
+      <li>
+        <NavLink to="/about">About Us</NavLink>
+      </li>
     </>
   );
 
   const handleLogOut = () => {
-      logOut()
-            .then(result => { console.log(result) })
-            .catch(error => console.log(error))
+    logOut()
+      .then((result) => {
+        console.log(result);
+      })
+      .catch((error) => console.log(error));
   };
   return (
     <div className="navbar bg-base-100 shadow-sm">
@@ -61,9 +67,9 @@ const Navbar = () => {
             {navItems}
           </ul>
         </div>
-        <a className="btn btn-ghost text-xl">
+        <span className="btn btn-ghost text-xl">
           <ProFastLogo></ProFastLogo>
-        </a>
+        </span>
       </div>
       <div className="navbar-center hidden lg:flex">
         <ul className="menu menu-horizontal px-1">{navItems}</ul>
