@@ -2,6 +2,8 @@ import { useForm } from "react-hook-form";
 import useAuth from "../../../hooks/useAuth";
 import { useState } from "react";
 import { useLoaderData } from "react-router-dom";
+import Swal from "sweetalert2";
+import useAxiosSecure from "../../../hooks/useAxiosSecure";
 
 const BeARider = () => {
   const { user } = useAuth();
@@ -13,16 +15,38 @@ const BeARider = () => {
   } = useForm();
 
   const [selectedRegion, setSelectedRegion] = useState("");
-      const serviceCenters = useLoaderData();
+  const serviceCenters = useLoaderData();
+  const axiosSecure = useAxiosSecure();
 
   const regions = [...new Set(serviceCenters.map((s) => s.region))];
 
-     const districts = serviceCenters
-        .filter((s) => s.region === selectedRegion)
-        .map((s) => s.district);
+  const districts = serviceCenters
+    .filter((s) => s.region === selectedRegion)
+    .map((s) => s.district);
 
   const onSubmit = async (data) => {
-    console.log(data);
+    const riderData = {
+      ...data,
+      name: user?.displayName || "",
+      email: user?.email || "",
+      status: "pending",
+      created_at: new Date().toISOString(),
+    };
+
+    console.log("Rider Application:", riderData);
+
+    axiosSecure.post("/riders", riderData).then((res) => {
+      if (res.data.insertedId) {
+        Swal.fire({
+          icon: "success",
+          title: "Application Submitted!",
+          text: "Your application is pending approval.",
+        });
+      }
+    });
+
+    // Send to your backend here
+    reset();
   };
   return (
     <div className="max-w-2xl mx-auto p-6 bg-base-100 rounded-xl shadow">
