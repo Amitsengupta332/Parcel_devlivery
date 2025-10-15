@@ -97,18 +97,46 @@ export const router = createBrowserRouter([
         path: "track",
         Component: TrackParcel,
       },
+      //  {
+      //   path: 'assign-rider',
+      //   element: <AdminRoute><AssignRider></AssignRider></AdminRoute>
+      // },
       {
         path: "pending-riders",
-        Component: PendingRiders,
+        element: (
+          <AdminRoute>
+            <PendingRiders></PendingRiders>
+          </AdminRoute>
+        ),
       },
       {
         path: "active-riders",
-        Component: ActiveRiders,
+        element: (
+          <AdminRoute>
+            <ActiveRiders></ActiveRiders>
+          </AdminRoute>
+        ),
       },
-     {
-        path: 'makeAdmin',
-        element: <AdminRoute><MakeAdmin></MakeAdmin></AdminRoute>
-      }
+      {
+        path: "makeAdmin",
+        element: (
+          <AdminRoute>
+            <MakeAdmin></MakeAdmin>
+          </AdminRoute>
+        ),
+      },
+      //   {
+      //     path: "pending-riders",
+      //     Component: PendingRiders,
+      //   },
+      //   {
+      //     path: "active-riders",
+      //     Component: ActiveRiders,
+      //   },
+      //  {
+      //     path: 'makeAdmin',
+      //     element: <AdminRoute><MakeAdmin></MakeAdmin></AdminRoute>
+      //   }
     ],
   },
 ]);
