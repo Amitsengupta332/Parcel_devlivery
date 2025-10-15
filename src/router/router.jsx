@@ -16,6 +16,8 @@ import BeARider from "../pages/Dashboard/BeARider/BeARider";
 import PendingRiders from "../pages/Dashboard/PendingRiders/PendingRiders";
 import ActiveRiders from "../pages/Dashboard/ActiveRiders/ActiveRiders";
 import MakeAdmin from "../pages/Dashboard/MakeAdmin/MakeAdmin";
+import Forbidden from "../pages/Forbidden/Forbidden";
+import AdminRoute from "../routes/AdminRoute";
 
 export const router = createBrowserRouter([
   {
@@ -30,6 +32,10 @@ export const router = createBrowserRouter([
         path: "coverage",
         Component: Coverage,
         loader: () => fetch("./serviceCenter.json"),
+      },
+      {
+        path: "forbidden",
+        Component: Forbidden,
       },
       {
         path: "beARider",
@@ -99,10 +105,10 @@ export const router = createBrowserRouter([
         path: "active-riders",
         Component: ActiveRiders,
       },
-      {
-        path: "makeAdmin",
-        element: <MakeAdmin />,
-      },
+     {
+        path: 'makeAdmin',
+        element: <AdminRoute><MakeAdmin></MakeAdmin></AdminRoute>
+      }
     ],
   },
 ]);
