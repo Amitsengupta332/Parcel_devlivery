@@ -1,14 +1,14 @@
 import axios from 'axios';
 import React from 'react';
 import useAuth from './useAuth';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 
 const axiosSecure = axios.create({
     baseURL: `http://localhost:5000`
 });
 
 const useAxiosSecure = () => {
-     const { user, logOut } = useAuth();
+    const { user, logOut } = useAuth();
     const navigate = useNavigate();
 
     axiosSecure.interceptors.request.use(config => {
@@ -18,8 +18,7 @@ const useAxiosSecure = () => {
         return Promise.reject(error);
     })
 
-
-     axiosSecure.interceptors.response.use(res => {
+    axiosSecure.interceptors.response.use(res => {
         return res;
     }, error => {
         const status = error.status;
