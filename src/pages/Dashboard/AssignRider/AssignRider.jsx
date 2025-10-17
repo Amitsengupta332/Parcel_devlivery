@@ -4,7 +4,6 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Swal from "sweetalert2";
 import { FaMotorcycle } from "react-icons/fa";
 
-
 const AssignRider = () => {
   const axiosSecure = useAxiosSecure();
   const [selectedParcel, setSelectedParcel] = useState(null);
@@ -26,24 +25,51 @@ const AssignRider = () => {
     },
   });
 
-  const { mutateAsync: assignRider } = useMutation({
-    mutationFn: async ({ parcelId, rider }) => {
-      const res = await axiosSecure.patch(`/parcels/${parcelId}/assign`, {
-        riderId: rider._id,
-        riderName: rider.name,
-      });
-      return res.data;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries(["assignableParcels"]);
-      Swal.fire("Success", "Rider assigned successfully!", "success");
-      document.getElementById("assignModal").close();
-    },
-    onError: () => {
-      Swal.fire("Error", "Failed to assign rider", "error");
-    },
-  });
+  // const { mutateAsync: assignRider } = useMutation({
+  //   mutationFn: async ({ parcelId, rider }) => {
+  //     const res = await axiosSecure.patch(`/parcels/${parcelId}/assign`, {
+  //       riderId: rider._id,
+  //       riderEmail: rider.email,
+  //       riderName: rider.name,
+  //     });
+  //     return res.data;
+  //   },
+  //   onSuccess: () => {
+  //     queryClient.invalidateQueries(["assignableParcels"]);
+  //     Swal.fire("Success", "Rider assigned successfully!", "success");
+  //     document.getElementById("assignModal").close();
+  //   },
+  //   onError: () => {
+  //     Swal.fire("Error", "Failed to assign rider", "error");
+  //   },
+  // });
+    const { mutateAsync: assignRider } = useMutation({
+        mutationFn: async ({ parcelId, rider }) => {
+            // setSelectedRider(rider);
+            const res = await axiosSecure.patch(`/parcels/${parcelId}/assign`, {
+                riderId: rider._id,
+                riderEmail: rider.email,
+                riderName: rider.name,
+            });
+            return res.data;
+        },
+        onSuccess: async () => {
+            queryClient.invalidateQueries(["assignableParcels"]);
+            Swal.fire("Success", "Rider assigned successfully!", "success");
 
+            // // track rider assigned
+            // await logTracking({
+            //     tracking_id: selectedParcel.tracking_id,
+            //     status: "rider_assigned",
+            //     details: `Assigned to ${selectedRider.name}`,
+            //     updated_by: user.email,
+            // });
+            document.getElementById("assignModal").close();
+        },
+        onError: () => {
+            Swal.fire("Error", "Failed to assign rider", "error");
+        },
+    });
   const openAssignModal = async (parcel) => {
     setSelectedParcel(parcel);
     setLoadingRiders(true);
