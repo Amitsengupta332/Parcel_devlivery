@@ -1,4 +1,4 @@
-import { Link, Outlet } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import authImage from "../assets/authImage.png";
 import ProFastLogo from "../pages/shared/ProFastLogo/ProFastLogo";
 
