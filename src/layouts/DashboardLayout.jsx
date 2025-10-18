@@ -86,8 +86,7 @@ const DashboardLayout = () => {
               Update Profile
             </NavLink>
           </li>
-
-          {/* riders link */}
+          {/* rider links */}
           {!roleLoading && role === "rider" && (
             <>
               <li>
@@ -96,18 +95,18 @@ const DashboardLayout = () => {
                   Pending Deliveries
                 </NavLink>
               </li>
-              {/* <li>
+              <li>
                 <NavLink to="/dashboard/completed-deliveries">
                   <FaCheckCircle className="inline-block mr-2" />
                   Completed Deliveries
                 </NavLink>
-              </li> */}
-              {/* <li>
+              </li>
+              <li>
                 <NavLink to="/dashboard/my-earnings">
                   <FaWallet className="inline-block mr-2" />
                   My Earnings
                 </NavLink>
-              </li> */}
+              </li>
             </>
           )}
 
